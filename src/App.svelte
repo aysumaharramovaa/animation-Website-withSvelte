@@ -1,24 +1,41 @@
 <script>
   import { onMount } from 'svelte';
+  import { fly, scale, fade } from 'svelte/transition';
 
   let scrollY = 0;
-  let activeTech = null; // info 
+  let activeTech = null;
 
-  const techs = [
-    { name: "HTML5", img: "https://cdn-icons-png.flaticon.com/512/732/732212.png", desc: "HTML5 veb səhifələrin strukturunu yaradan əsas dildir." },
-    { name: "CSS3", img: "https://cdn-icons-png.flaticon.com/512/732/732190.png", desc: "CSS3 saytların dizaynını və animasiyalarını təyin edir." },
-    { name: "JavaScript", img: "https://cdn-icons-png.flaticon.com/512/5968/5968292.png", desc: "JavaScript veb səhifələrə interaktivlik əlavə edir." },
-    { name: "Svelte", img: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Svelte_Logo.svg", desc: "Svelte komponent əsaslı frameworkdür və compile zamanı işləyir." }
-  ];
+const techs = [
+  { 
+    name: "HTML5", 
+    img: "https://cdn-icons-png.flaticon.com/512/732/732212.png", 
+    desc: "HTML5 is the main language used to structure web pages." 
+  },
+  { 
+    name: "CSS3", 
+    img: "https://cdn-icons-png.flaticon.com/512/732/732190.png", 
+    desc: "CSS3 is used to style web pages and create animations." 
+  },
+  { 
+    name: "JavaScript", 
+    img: "https://cdn-icons-png.flaticon.com/512/5968/5968292.png", 
+    desc: "JavaScript adds interactivity to web pages." 
+  },
+  { 
+    name: "Svelte", 
+    img: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Svelte_Logo.svg", 
+    desc: "Svelte is a component-based framework that compiles at build time." 
+  }
+];
 
   let scales = techs.map(() => 1);
 
   const handleScroll = () => {
     scrollY = window.scrollY;
     scales = scales.map((s, i) => {
-      let newScale = 1 + scrollY / 800 - i * 0.05;
-      if (newScale < 0.5) newScale = 0.5;
-      if (newScale > 2) newScale = 2;
+      let newScale = 1 + scrollY / 1000 - i * 0.05;
+      if (newScale < 0.6) newScale = 0.6;
+      if (newScale > 1.5) newScale = 1.5;
       return newScale;
     });
   }
@@ -40,8 +57,10 @@
 <style>
   body {
     margin: 0;
-    font-family: sans-serif;
-    background: #f4f4f9;
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #111 0%, #000 100%);
+    color: #fff;
+    overflow-x: hidden;
   }
 
   .container {
@@ -49,7 +68,8 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 50px;
-    padding: 50px 20px;
+    padding: 80px 20px;
+    position: relative;
   }
 
   .tech-card {
@@ -58,16 +78,19 @@
     align-items: center;
     text-align: center;
     width: 180px;
-    padding: 20px;
+    padding: 25px;
     border-radius: 20px;
-    background: white;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
     cursor: pointer;
+    transition: transform 0.4s, box-shadow 0.4s, border-color 0.3s;
   }
 
   .tech-card:hover {
-    box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #00ffff, 0 0 30px #587878;
+    border-color: #00ffff;
   }
 
   .tech-card img {
@@ -75,83 +98,80 @@
     height: 100px;
     margin-bottom: 15px;
     transition: transform 0.3s;
+    filter: drop-shadow(0 0 5px #00ffff);
   }
 
   h2 {
     margin: 0 0 10px 0;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
 
   p {
     font-size: 0.85rem;
-    color: #555;
+    color: #aaa;
   }
 
-  /* Modal */
   .modal-bg {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    display: flex; justify-content: center; align-items: center;
     z-index: 10;
   }
 
   .modal {
-    background: white;
+    background: #111;
     padding: 30px;
     border-radius: 20px;
     max-width: 500px;
     width: 90%;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    animation: fadeIn 0.3s ease-out;
+    box-shadow: 0 0 30px #00ffff;
+    border: 2px solid #00ffff;
   }
 
   .modal img {
     width: 120px;
     height: 120px;
     margin-bottom: 20px;
+    filter: drop-shadow(0 0 10px #00ffff);
   }
 
   .modal h2 {
     margin-bottom: 15px;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+    color: #00ffff;
   }
 
   .modal p {
     font-size: 1rem;
-    color: #444;
+    color: #ccc;
   }
 
   .close-btn {
     margin-top: 20px;
-    padding: 10px 25px;
-    background: #007bff;
-    color: white;
+    padding: 12px 30px;
+    background: #00ffff;
+    color: #000;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    transition: background 0.2s;
+    font-weight: bold;
+    transition: transform 0.2s, background 0.2s;
   }
 
   .close-btn:hover {
-    background: #0056b3;
-  }
-
-  @keyframes fadeIn {
-    from {opacity: 0; transform: scale(0.9);}
-    to {opacity: 1; transform: scale(1);}
+    transform: scale(1.05);
+    background: #67b3b3;
   }
 </style>
 
 <div class="container">
-  {#each techs as tech, i}
-    <div class="tech-card" style="transform: scale({scales[i]});" on:click={() => openTech(tech)}>
+  {#each techs as tech, i (tech.name)}
+    <div class="tech-card" style="transform: scale({scales[i]});" on:click={() => openTech(tech)}
+         in:fly={{ y: 100, duration: 700, delay: i * 150 }}
+         out:fade={{ duration: 200 }}>
       <img src={tech.img} alt={tech.name} />
       <h2>{tech.name}</h2>
       <p>Click for more info</p>
@@ -160,8 +180,8 @@
 </div>
 
 {#if activeTech}
-  <div class="modal-bg" on:click={closeTech}>
-    <div class="modal" on:click|stopPropagation>
+  <div class="modal-bg" on:click={closeTech} transition:fade>
+    <div class="modal" on:click|stopPropagation transition:scale={{ duration: 300 }}>
       <img src={activeTech.img} alt={activeTech.name} />
       <h2>{activeTech.name}</h2>
       <p>{activeTech.desc}</p>
